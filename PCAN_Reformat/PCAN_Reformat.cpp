@@ -27,6 +27,23 @@
 //#define ScanTool
 #define PCAN_Explorer
 
+// Filenames
+#define FILE_IN "longAFM.trc"
+#define FILE_OUT "longAFM_filtered.txt"
+
+// Filter by ID
+#define FILTER_BY_ID
+#define ID1 0x7E0
+#define ID2 0x7E8
+#define ID3 0x101
+//#define ID4 0x00
+//#define ID5 0x00
+//#define ID6 0x00
+//#define ID7 0x00
+//#define ID8 0x00
+//#define ID9 0x00
+//#define ID10 0x00
+
 // Pad frames shorter than 8 with zeros
 //#define PAD_ZERO
 /*=========================================================
@@ -142,7 +159,7 @@ void formatTRC(char* filename, char* fileOut)
 #endif
 
         //printf("ID: %0x\n", buffer.id);
-        fprintf(fp, "%08s   %9.3f   %04x   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
+        fprintf(fp, "% 8s   % 11.3f   %04x   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
 
 #if defined PAD_ZERO
         for (int i = 0; i < 8; i++)
@@ -165,7 +182,7 @@ void formatTRC(char* filename, char* fileOut)
 }
 
 // Find onlys messages with passed ID
-void formatTRC(char* filename, char* fileOut, int id)
+void formatTRC(char* filename, char* fileOut, int * filterIDs)
 {
     char line_in[MAX_STRING_LENGTH];
 
@@ -183,6 +200,8 @@ void formatTRC(char* filename, char* fileOut, int id)
     {
         fgets(line_in, MAX_STRING_LENGTH, ptr);
     }
+
+    bool hasID = false;
 
 #if defined PCAN_View
     /*
@@ -243,17 +262,27 @@ void formatTRC(char* filename, char* fileOut, int id)
         }
 #endif
         
-        //if (buffer.id == 0x42F || buffer.id == 0x326)
-        if (buffer.id == id || buffer.id == 0x7E8 || buffer.id == 0x101)
+        //for (int i = 0; i < sizeof(filterIDs) / sizeof(filterIDs[0]); i++)
+        for (int i = 0; i < 8; i++)
         {
-            fprintf(fp, "%08s   %9.3f   %04x   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
+            if (filterIDs[i] == buffer.id)
+            {
+                hasID = true;
+                break;
+            }
+        }
+
+        //if (buffer.id == 0x42F || buffer.id == 0x326)
+        if (hasID)
+        {
+            fprintf(fp, "% 8s   % 11.3f   %04x   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
         }
 
         for (int i = 0; i < buffer.length; i++)
         {
             fscanf(ptr, "%x", &buffer.data[i]);
             //printf("%02x ", buffer.data[i]);
-            if (buffer.id == id || buffer.id == 0x7E8 || buffer.id == 0x101)
+            if (hasID)
             {
                 fprintf(fp, "  %02x", buffer.data[i]);
             }
@@ -261,10 +290,12 @@ void formatTRC(char* filename, char* fileOut, int id)
 
         //printf("\n");
         //if (buffer.id == 0x42F || buffer.id == 0x326)
-        if (buffer.id == id || buffer.id == 0x7E8 || buffer.id == 0x101)
+        if (hasID)
         {
             fprintf(fp, "\n");
         }
+
+        hasID = false;
     }
 }
 
@@ -272,15 +303,79 @@ void formatTRC(char* filename, char* fileOut, int id)
 int main(int argc, char* argv[])
 {
 #if defined DEVMODE
-    char filename[] = "longAFM.trc";
-    char fileOut[] = "longAFM_filtered.txt";
+    char filename[] = FILE_IN;
+    char fileOut[] = FILE_OUT;
 #else 
     char filename[] = argv[1];
     char fileOut[] = argv[2];
 #endif
 
-    formatTRC(filename, fileOut, 0x7E0);
-    //formatTRC(filename, fileOut);
+#if defined FILTER_BY_ID
+    int filterIDs[10];
+    #if defined ID1
+    filterIDs[0] = ID1;
+    #else
+    filterIDs[0] = 0x00;
+    #endif
 
-    printf("Task Complete\n");
+    #if defined ID2
+    filterIDs[1] = ID2;
+    #else
+    filterIDs[1] = 0x00;
+    #endif
+
+    #if defined ID3
+    filterIDs[2] = ID3;
+    #else
+    filterIDs[2] = 0x00;
+    #endif
+
+    #if defined ID4
+    filterIDs[3] = ID4;
+    #else
+    filterIDs[3] = 0x00;
+    #endif
+
+    #if defined ID5
+    filterIDs[4] = ID5;
+    #else
+    filterIDs[4] = 0x00;
+    #endif
+
+    #if defined ID6
+    filterIDs[5] = ID6;
+    #else
+    filterIDs[5] = 0x00;
+    #endif
+
+    #if defined ID7
+    filterIDs[6] = ID7;
+    #else
+    filterIDs[6] = 0x00;
+    #endif
+
+    #if defined ID8
+    filterIDs[7] = ID8;
+    #else
+    filterIDs[7] = 0x00;
+    #endif
+
+    #if defined ID9
+    filterIDs[8] = ID9;
+    #else
+    filterIDs[8] = 0x00;
+    #endif
+
+    #if defined ID10
+    filterIDs[9] = ID10;
+    #else
+    filterIDs[9] = 0x00;
+    #endif
+
+    formatTRC(filename, fileOut, filterIDs);
+#else
+    formatTRC(filename, fileOut);
+#endif
+
+    printf("File filter complete\n");
 }
