@@ -32,10 +32,10 @@
 #define FILE_OUT "longAFM_filtered.txt"
 
 // Filter by ID
-#define FILTER_BY_ID
-#define ID1 0x7E0
-#define ID2 0x7E8
-#define ID3 0x101
+//#define FILTER_BY_ID
+//#define ID1 0x7E0
+//#define ID2 0x7E8
+//#define ID3 0x101
 //#define ID4 0x00
 //#define ID5 0x00
 //#define ID6 0x00
@@ -377,5 +377,5 @@ int main(int argc, char* argv[])
     formatTRC(filename, fileOut);
 #endif
 
-    printf("File filter complete\n");
+    printf("File format complete\n");
 }
