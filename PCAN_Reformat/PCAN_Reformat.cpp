@@ -20,32 +20,34 @@
     START SETTINGS
 ===========================================================*/
 // Switches between hardwired filename to CMD argv[1] filename
-#define DEVMODE 
+// TODO: Finish command line function
+#define DEVMODE // Leave this on until CMD is finished
 
-// Pick a capture software
-//#define PCAN_View
+// *** Pick a capture software ***
+#define PCAN_View
 //#define ScanTool
-#define PCAN_Explorer
+//#define PCAN_Explorer
 
-// Filenames
-#define FILE_IN "longAFM.trc"
-#define FILE_OUT "longAFM_filtered.txt"
+// *** Filenames ***
+#define FILE_IN "2020gmc.trc"
+#define FILE_OUT "2020gmc_f.txt"
 
-// Filter by ID
-//#define FILTER_BY_ID
-//#define ID1 0x7E0
-//#define ID2 0x7E8
-//#define ID3 0x101
-//#define ID4 0x00
-//#define ID5 0x00
+// *** Filter by ID ***
+#define FILTER_BY_ID
+#define ID1 0x241
+#define ID2 0x7E8
+#define ID3 0x101
+#define ID4 0x7E0
+//#define ID5 0xC9
 //#define ID6 0x00
 //#define ID7 0x00
 //#define ID8 0x00
 //#define ID9 0x00
 //#define ID10 0x00
 
-// Pad frames shorter than 8 with zeros
+// *** Pad frames shorter than 8 with zeros ***
 //#define PAD_ZERO
+
 /*=========================================================
     END SETTINGS
 ===========================================================*/
