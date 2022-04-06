@@ -29,15 +29,15 @@
 //#define PCAN_Explorer
 
 // *** Filenames ***
-#define FILE_IN "2020gmc.trc"
-#define FILE_OUT "2020gmc_f.txt"
+#define FILE_IN "18fordf150_9.trc"
+#define FILE_OUT "18fordf150_9.txt"
 
 // *** Filter by ID ***
 #define FILTER_BY_ID
-#define ID1 0x241
-#define ID2 0x7E8
-#define ID3 0x101
-#define ID4 0x7E0
+#define ID1 0x326
+//#define ID2 0x7E8
+//#define ID3 0x101
+//#define ID4 0x7E0
 //#define ID5 0xC9
 //#define ID6 0x00
 //#define ID7 0x00
@@ -296,7 +296,6 @@ void formatTRC(char* filename, char* fileOut, int * filterIDs)
         {
             fprintf(fp, "\n");
         }
-
         hasID = false;
     }
 }
