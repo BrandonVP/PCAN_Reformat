@@ -29,24 +29,24 @@
 //#define PCAN_Explorer
 
 // *** Filenames ***
-#define FILE_IN "18fordf150_9.trc"
-#define FILE_OUT "18fordf150_9.txt"
+#define FILE_IN "re.txt"
+#define FILE_OUT "rep.txt"
 
 // *** Filter by ID ***
-#define FILTER_BY_ID
-#define ID1 0x326
-//#define ID2 0x7E8
-//#define ID3 0x101
-//#define ID4 0x7E0
-//#define ID5 0xC9
-//#define ID6 0x00
+//#define FILTER_BY_ID
+//#define ID1 0x3a2
+//#define ID2 0x318
+//#define ID3 0x352
+//#define ID4 0x33B
+//#define ID5 0x3E8
+//#define ID6 0x2FF
 //#define ID7 0x00
 //#define ID8 0x00
 //#define ID9 0x00
 //#define ID10 0x00
 
 // *** Pad frames shorter than 8 with zeros ***
-//#define PAD_ZERO
+#define PAD_ZERO
 
 /*=========================================================
     END SETTINGS
@@ -166,7 +166,7 @@ void formatTRC(char* filename, char* fileOut)
 #if defined PAD_ZERO
         for (int i = 0; i < 8; i++)
         {
-            (i < 8) ? (fscanf(ptr, "%x", &buffer.data[i])) : (buffer.data[i] = 0);
+            (i < buffer.length) ? (fscanf(ptr, "%x", &buffer.data[i])) : (buffer.data[i] = 0);
             fprintf(fp, "  %02x", buffer.data[i]);
         }
 #else
