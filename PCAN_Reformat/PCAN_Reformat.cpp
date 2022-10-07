@@ -29,15 +29,15 @@
 //#define PCAN_Explorer
 
 // *** Filenames ***
-#define FILE_IN "re.txt"
-#define FILE_OUT "rep.txt"
+#define FILE_IN "sgdm_15_40_20.trc"
+#define FILE_OUT "sgdm_15_40_20(2A).txt"
 
 // *** Filter by ID ***
-//#define FILTER_BY_ID
-//#define ID1 0x3a2
-//#define ID2 0x318
-//#define ID3 0x352
-//#define ID4 0x33B
+#define FILTER_BY_ID
+#define ID1 0x2A
+//#define ID2 0x340
+//#define ID3 0x3DE
+//#define ID4 0x122
 //#define ID5 0x3E8
 //#define ID6 0x2FF
 //#define ID7 0x00
@@ -46,7 +46,7 @@
 //#define ID10 0x00
 
 // *** Pad frames shorter than 8 with zeros ***
-#define PAD_ZERO
+//#define PAD_ZERO
 
 /*=========================================================
     END SETTINGS
@@ -111,24 +111,24 @@ void formatTRC(char* filename, char* fileOut)
     ;---+-- ------+------ +- --+----- +- +- +- +- -- -- -- -- -- -- --
         1     13212.973  DT 18DB33F1 Rx  8  02 01 00 00 00 00 00 00 
     */
-    while (fscanf(ptr, "%s %f %*s %x %*s %d", &buffer.messageNum, &buffer.time, &buffer.id, &buffer.length) != EOF)
+    while (fscanf(ptr, "%s %f %*s %XS %*s %d", &buffer.messageNum, &buffer.time, &buffer.id, &buffer.length) != EOF)
     {
 #endif
 
 #if defined ScanTool
     /*
     ;-------------------------------------------------------------------------------
-    ;   Message   Time     ID     
-    ;   Number    Offset   [hex]  Data Length
-    ;   |         [ms]     |      |  Data [hex] ...
-    ;   |         |        |      |  |
-    ;---+---------+--------+------+- +- -- -- -- -- -- -- --
-               00059172  0233     8  00 57 6F 72 6C 64 00 00
+    ;   Message   Time     ID [hex]     
+    ;   Number    Offset   |     Data Length
+    ;   |         [ms]     |     |   Data [hex] ...
+    ;   |         |        |     |   |
+    ;---+---------+--------+-----+-  +- -- -- -- -- -- -- --
+        1       108408    020D   6   AA  05  60  00  82  6A  00  00
     */
         int messageNumber = 0;
-        while (fscanf(ptr, "%f %x %d", &buffer.time, &buffer.id, &buffer.length) != EOF)
+        while (fscanf(ptr, "%d %d %x %d", &buffer.messageNum, &buffer.time, &buffer.id, &buffer.length) != EOF)
         {
-            sprintf(buffer.messageNum, "  %06d", messageNumber++);
+            
 #endif
 
 #if defined PCAN_Explorer
@@ -161,24 +161,23 @@ void formatTRC(char* filename, char* fileOut)
 #endif
 
         //printf("ID: %0x\n", buffer.id);
-        fprintf(fp, "% 8s   % 11.3f   %04x   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
+        fprintf(fp, "% 8s   % 11.3f   %04X   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
 
 #if defined PAD_ZERO
         for (int i = 0; i < 8; i++)
         {
             (i < buffer.length) ? (fscanf(ptr, "%x", &buffer.data[i])) : (buffer.data[i] = 0);
-            fprintf(fp, "  %02x", buffer.data[i]);
+            fprintf(fp, "  %02X", buffer.data[i]);
         }
 #else
         for (int i = 0; i < buffer.length; i++)
         {
-            fscanf(ptr, "%x", &buffer.data[i]);
+            fscanf(ptr, "%X", &buffer.data[i]);
             //printf("%02x ", buffer.data[i]);
 
-            fprintf(fp, "  %02x", buffer.data[i]);
+            fprintf(fp, "  %02X", buffer.data[i]);
         }
 #endif
-        //printf("\n");
         fprintf(fp, "\n");
     }
 }
