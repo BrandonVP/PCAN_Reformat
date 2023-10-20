@@ -380,3 +380,12 @@ healthchecksdb
 /PCAN_Reformat/fullRelearnS.trc
 /PCAN_Reformat/fullRelearnF.txt
 /PCAN_Reformat/fullRelearn.trc
+/PCAN_Reformat/FLandFRrelearnIncomplete.trc
+/PCAN_Reformat/FLandFRrelearnIncompleteF.txt
+/PCAN_Reformat/FLonlyRelearnIncomplete.trc
+/PCAN_Reformat/FLonlyRelearnIncompleteF.txt
+/PCAN_Reformat/FL_FR_RR_relearn_incomplete.trc
+/PCAN_Reformat/FL_FR_RR_relearn_incompleteF.txt
+/PCAN_Reformat/fullRelearnF_Ford.txt
+/PCAN_Reformat/fullRelearnYukon.trc
+/PCAN_Reformat/fullRelearnYukonF.txt

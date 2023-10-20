@@ -29,12 +29,12 @@
 //#define PCAN_Explorer
 
 // *** Filenames ***
-#define FILE_IN "sgdm_15_40_20.trc"
-#define FILE_OUT "sgdm_15_40_20(2A).txt"
+#define FILE_IN "fullRelearn.trc"
+#define FILE_OUT "fullRelearnF_Ford.txt"
 
 // *** Filter by ID ***
-#define FILTER_BY_ID
-#define ID1 0x2A
+//#define FILTER_BY_ID
+//#define ID1 0x2A
 //#define ID2 0x340
 //#define ID3 0x3DE
 //#define ID4 0x122
@@ -46,14 +46,14 @@
 //#define ID10 0x00
 
 // *** Pad frames shorter than 8 with zeros ***
-//#define PAD_ZERO
+#define PAD_ZERO
 
 /*=========================================================
     END SETTINGS
 ===========================================================*/
 
 #if defined PCAN_View
-#define FILE_HEADER_SIZE 15
+#define FILE_HEADER_SIZE 14 // old 15?
 #endif
 #if defined ScanTool
 #define FILE_HEADER_SIZE 0
@@ -80,7 +80,7 @@ typedef struct
 CANMSG buffer;
 
 int count = 0;
-
+bool runOnce = true;
 // Convert capture to standard output text file
 void formatTRC(char* filename, char* fileOut)
 {
@@ -109,10 +109,24 @@ void formatTRC(char* filename, char* fileOut)
     ;   |         [ms]    |    |      |  |  Data [hex] ...
     ;   |         |       |    |      |  |  |
     ;---+-- ------+------ +- --+----- +- +- +- +- -- -- -- -- -- -- --
-        1     13212.973  DT 18DB33F1 Rx  8  02 01 00 00 00 00 00 00 
+        1     13212.973  DT 18DB33F1 Rx  8  02 01 00 00 00 00 00 00 // Old view
+        1)        0.8    Rx     042C     8  A4 02 00 00 33 B0 00 00 // v5.1.0.887
     */
-    while (fscanf(ptr, "%s %f %*s %XS %*s %d", &buffer.messageNum, &buffer.time, &buffer.id, &buffer.length) != EOF)
+    //while (fscanf(ptr, "%s %f %*s %XS %*s %d", &buffer.messageNum, &buffer.time, &buffer.id, &buffer.length) != EOF) // Old view
+    while (fscanf(ptr, "%s     %f  %*s %XS", &buffer.messageNum, &buffer.time, &buffer.id) != EOF) // v5.1.0.887
     {
+        // Remove the ")" from the message number v5.1.0.887
+        for (int i = 0; i < MAX_CHAR_LENGTH; i++)
+        {
+            if (buffer.messageNum[i] == ')')
+            {
+                buffer.messageNum[i] = ' ';
+                i = MAX_CHAR_LENGTH;
+            }
+        }
+       
+       fscanf(ptr, "%d", &buffer.length);
+       //printf("%s %f %X %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
 #endif
 
 #if defined ScanTool
@@ -159,9 +173,9 @@ void formatTRC(char* filename, char* fileOut)
             }
         }
 #endif
-
+        //buffer.time = buffer.time * 100;
         //printf("ID: %0x\n", buffer.id);
-        fprintf(fp, "% 8s   % 11.3f   %04X   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
+        fprintf(fp, "% 8s   %f   %04X   %d ", buffer.messageNum, buffer.time, buffer.id, buffer.length);
 
 #if defined PAD_ZERO
         for (int i = 0; i < 8; i++)
@@ -170,7 +184,7 @@ void formatTRC(char* filename, char* fileOut)
             fprintf(fp, "  %02X", buffer.data[i]);
         }
 #else
-        for (int i = 0; i < buffer.length; i++)
+        for (int i = 0; i < buffer.length; i++) // 
         {
             fscanf(ptr, "%X", &buffer.data[i]);
             //printf("%02x ", buffer.data[i]);
@@ -179,6 +193,7 @@ void formatTRC(char* filename, char* fileOut)
         }
 #endif
         fprintf(fp, "\n");
+        //printf("\n");
     }
 }
 
